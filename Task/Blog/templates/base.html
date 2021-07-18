@@ -1,0 +1,26 @@
+{% load static %}
+<html lang="ru">
+<head>
+</head>
+<body>
+<div class="mt-5 pt-4">
+    <div class="wrapper">
+        <div class="nav">
+            {% if user.is_authenticated %}
+                <h3>Добро пожаловать, {{ user.username }}</h3>
+                <a href="/myblog">Мой блог</a>
+                <a href="/mynews">Моя лента</a>
+                <a href="/accounts/logout">Выйти</a>
+            {% else %}
+                <a href="/accounts/login" >Войти!</a>
+            {% endif %}
+                <a href="/users">Пользователи</a>
+
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+</body>
+</html>

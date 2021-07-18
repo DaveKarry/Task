@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="createpost">Создать новый пост</a>
+<div class="content">
+    {% if user.is_authenticated %}
+    <h>Создать пост</h>
+    <div class="form-group">
+        <form enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Опубликовать</button>
+        </form>
+
+    </div>
+
+        {% for post in posts %}
+        <h4>{{ post.posted_date }}</h4>
+        <p> {{ post.title }} </p>
+        <h4>{{ post.text }}</h4>
+    <hr>
+        {% endfor %}
+    {% else %}
+        <p>{{ message }}</p>
+    {% endif %}
+</div>
+{% endblock %}
