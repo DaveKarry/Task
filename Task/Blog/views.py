@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from Blog.forms import PostForm
-from Blog.models import Post
+from Blog.models import Post, NewUser
 
 
 class Index(View):
@@ -22,8 +22,7 @@ class Index(View):
 
 class Users(View):
     def get(self, *args, **kwargs):
-        User = get_user_model()
-        users = User.objects.all()
+        users = NewUser.objects.all()
         return render(self.request, "blog/users.html", {'users': users})
 
 
@@ -72,11 +71,17 @@ class CreatePost(View):
 
 class UserBlog(View):
     def get(self, *args, **kwargs):
-        user = get_object_or_404(User, username=kwargs['username'])
-
+        user = get_object_or_404(NewUser, username=kwargs['username'])
         posts = Post.objects.filter(
             author=user
         ).order_by('-posted_date')
         context = {'user': user, 'posts': posts}
         return render(self.request, 'blog/userblog.html', context)
 
+
+class Subscribe(View):
+    def get(self, *args, **kwargs):
+        targetUser = get_object_or_404(NewUser, username=kwargs['username'])
+        currentUser = self.request.user
+        currentUser.subscribers.add(targetUser)
+        return render(self.request, 'blog/userblog.html')

@@ -2,6 +2,9 @@
 
 {% block content %}
     <h1>Вы просматриваете посты пользователя {{ user.username }}</h1>
+    {% if request.user.is_authenticated %}
+    <p><a href={{user.get_subscribe_absolute_url}}>Подписаться!</a></p>
+    {% endif %}
     {% for post in posts %}
         <h4>{{ post.posted_date }}</h4>
         <p> {{ post.title }} </p>
