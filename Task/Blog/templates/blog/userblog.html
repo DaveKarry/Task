@@ -3,7 +3,11 @@
 {% block content %}
     <h1>Вы просматриваете посты пользователя {{ user.username }}</h1>
     {% if request.user.is_authenticated %}
-    <p><a href={{user.get_subscribe_absolute_url}}>Подписаться!</a></p>
+        {% if isSub == "sub" %}
+            <p><a href={{user.get_unsubscribe_absolute_url}}>Отписаться!</a></p>
+        {% elif isSub == "unsub" %}
+            <p><a href={{user.get_subscribe_absolute_url}}>Подписаться!</a></p>
+        {% endif %}
     {% endif %}
     {% for post in posts %}
         <h4>{{ post.posted_date }}</h4>

@@ -44,8 +44,8 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=150, unique=True)
     start_date = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    subscribers = models.ManyToManyField("NewUser")
+    is_active = models.BooleanField(default=True)
+    subscribers = models.ManyToManyField("NewUser", blank=True)
 
     objects = CustomAccountManager()
 
@@ -62,6 +62,11 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
 
     def get_subscribe_absolute_url(self):
         return reverse("subscribe", kwargs={
+            'username': self.username
+        })
+
+    def get_unsubscribe_absolute_url(self):
+        return reverse("unsubscribe", kwargs={
             'username': self.username
         })
 

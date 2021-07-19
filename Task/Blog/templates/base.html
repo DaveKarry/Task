@@ -6,7 +6,7 @@
 <div class="mt-5 pt-4">
     <div class="wrapper">
         <div class="nav">
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
                 <h3>Добро пожаловать, {{ request.user.username }}</h3>
                 <a href="/myblog">Мой блог</a>
                 <a href="/mynews">Моя лента</a>

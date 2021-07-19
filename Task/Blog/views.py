@@ -71,11 +71,19 @@ class CreatePost(View):
 
 class UserBlog(View):
     def get(self, *args, **kwargs):
-        user = get_object_or_404(NewUser, username=kwargs['username'])
+        targetUser = get_object_or_404(NewUser, username=kwargs['username'])
         posts = Post.objects.filter(
-            author=user
+            author=targetUser
         ).order_by('-posted_date')
-        context = {'user': user, 'posts': posts}
+        if self.request.user.is_authenticated:
+            currentUser = self.request.user
+            if targetUser in currentUser.subscribers.all():
+                isSub = "sub"
+            else:
+                isSub = "unsub"
+        else:
+            isSub = "notAuth"
+        context = {'user': targetUser, 'posts': posts, 'isSub': isSub}
         return render(self.request, 'blog/userblog.html', context)
 
 
@@ -84,4 +92,22 @@ class Subscribe(View):
         targetUser = get_object_or_404(NewUser, username=kwargs['username'])
         currentUser = self.request.user
         currentUser.subscribers.add(targetUser)
-        return render(self.request, 'blog/userblog.html')
+        posts = Post.objects.filter(
+            author=targetUser
+        ).order_by('-posted_date')
+        isSub = "sub"
+        context = {'user': targetUser, 'posts': posts, 'isSub': isSub}
+        return render(self.request, 'blog/userblog.html', context)
+
+
+class UnSubscribe(View):
+    def get(self, *args, **kwargs):
+        targetUser = get_object_or_404(NewUser, username=kwargs['username'])
+        currentUser = self.request.user
+        currentUser.subscribers.remove(targetUser)
+        posts = Post.objects.filter(
+            author=targetUser
+        ).order_by('-posted_date')
+        isSub = "unsub"
+        context = {'user': targetUser, 'posts': posts, 'isSub': isSub}
+        return render(self.request, 'blog/userblog.html', context)
