@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Вы просматриваете свою ленту</h1>
+    {% for p in posts %}
+
+            <p>"{{ p.title }}" от {{p.author}}</p>
+            <h4>{{ p.text }}</h4>
+            <p>{{ p.posted_date }}</p>
+    <hr/>
+
+
+    {% endfor %}
+{% endblock %}

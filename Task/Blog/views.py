@@ -111,3 +111,15 @@ class UnSubscribe(View):
         isSub = "unsub"
         context = {'user': targetUser, 'posts': posts, 'isSub': isSub}
         return render(self.request, 'blog/userblog.html', context)
+
+
+class MyNews(View):
+    def get(self, *args, **kwargs):
+        currentUser = self.request.user
+        posts = Post.objects.none()
+        for person in currentUser.subscribers.all():
+            posts |= Post.objects.filter(
+                author=person
+            ).order_by('-posted_date')
+        context = {'posts': posts}
+        return render(self.request, 'blog/mynews.html', context)
