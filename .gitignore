@@ -1,2 +1,3 @@
 venv/
 Task/Blog/migrations/
+Task/db.sqlite3
