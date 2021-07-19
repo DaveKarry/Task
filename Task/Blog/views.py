@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
@@ -43,13 +44,29 @@ class MyBlog(View):
         form = PostForm(self.request.POST, self.request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = self.request.user
+            currentUser = self.request.user
+            post.author = currentUser
             post.save()
+
+            users = NewUser.objects.filter(subscribers=currentUser)
+            emails = []
+            for u in users:
+                emails.append(u.email)
+            send_mail(
+                f"New Post from {currentUser}!",
+                f"hello! Your Fav have posted new post http://127.0.0.1:8000/post/{post.id}",
+                "admin@gmail.com",
+                emails
+            )
+            print(users)
             return redirect('myblog')
         else:
             return HttpResponseRedirect('createtovar')
 
+""""
 
+Этот метод аналогичен верхнему, так-что я просто работал с верхним
+"""
 class CreatePost(View):
     def get(self, *args, **kwargs):
         form = PostForm()
@@ -63,6 +80,7 @@ class CreatePost(View):
             post = form.save(commit=False)
             post.author = self.request.user
             post.save()
+
             return redirect('myblog')
         else:
             messages.info(self.request, 'Какая-то ошибка! Прверьте поля или попробуйте снова!')
@@ -123,3 +141,9 @@ class MyNews(View):
             ).order_by('-posted_date')
         context = {'posts': posts}
         return render(self.request, 'blog/mynews.html', context)
+
+
+class GetPost(View):
+    def get(self, *args, **kwargs):
+        targetPost = get_object_or_404(Post, id=kwargs['id'])
+        return render(self.request, 'blog/post.html', {"targetPost": targetPost})

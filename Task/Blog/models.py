@@ -79,3 +79,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.author}'s ({self.title}) from _{self.posted_date}_"
+
+    def get_absolute_url(self):
+        return reverse("more", kwargs={
+            'id': self.id
+        })
+
