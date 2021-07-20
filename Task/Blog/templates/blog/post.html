@@ -4,5 +4,10 @@
         <h4>{{ targetPost.posted_date }}</h4>
         <p> {{ targetPost.title }} </p>
         <h4>{{ targetPost.text }}</h4>
+        {% if isSeen  %}
+            <a href={{targetPost.get_seen_url}}> Пометить не прочитанным </a>
+        {% else %}
+            <a href={{targetPost.get_seen_url}}> Пометить прочитанным </a>
+        {% endif %}
         <hr>
 {% endblock %}

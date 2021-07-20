@@ -46,6 +46,7 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     subscribers = models.ManyToManyField("NewUser", blank=True)
+    seen_posts = models.ManyToManyField("Post", blank=True)
 
     objects = CustomAccountManager()
 
@@ -81,7 +82,11 @@ class Post(models.Model):
         return f"{self.author}'s ({self.title}) from _{self.posted_date}_"
 
     def get_absolute_url(self):
-        return reverse("more", kwargs={
+        return reverse("getpost", kwargs={
             'id': self.id
         })
 
+    def get_seen_url(self):
+        return reverse("seen", kwargs={
+            'id': self.id
+        })

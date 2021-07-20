@@ -55,7 +55,7 @@ class MyBlog(View):
             send_mail(
                 f"New Post from {currentUser}!",
                 f"hello! Your Fav have posted new post http://127.0.0.1:8000/post/{post.id}",
-                "admin@gmail.com",
+                "davekarry1337@gmail.com",
                 emails
             )
             print(users)
@@ -63,10 +63,13 @@ class MyBlog(View):
         else:
             return HttpResponseRedirect('createtovar')
 
+
 """"
 
 Этот метод аналогичен верхнему, так-что я просто работал с верхним
 """
+
+
 class CreatePost(View):
     def get(self, *args, **kwargs):
         form = PostForm()
@@ -147,3 +150,20 @@ class GetPost(View):
     def get(self, *args, **kwargs):
         targetPost = get_object_or_404(Post, id=kwargs['id'])
         return render(self.request, 'blog/post.html', {"targetPost": targetPost})
+
+
+class SetSeen(View):
+    def get(self, *args, **kwargs):
+        targetPost = get_object_or_404(Post, id=kwargs['id'])
+        currentUser = self.request.user
+        if targetPost in currentUser.seen_posts.all():
+            isSeen = False
+            print("1")
+            currentUser.seen_posts.remove(targetPost)
+        else:
+            isSeen = True
+            print("2")
+            currentUser.seen_posts.add(targetPost)
+        context = {"targetPost": targetPost, 'isSeen': isSeen}
+        return render(self.request, 'blog/post.html', context)
+

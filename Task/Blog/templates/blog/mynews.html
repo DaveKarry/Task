@@ -5,6 +5,7 @@
     {% for p in posts %}
 
             <p>"{{ p.title }}" от {{p.author}}</p>
+            <a href={{p.get_absolute_url}}> подробнее</a>
             <h4>{{ p.text }}</h4>
             <p>{{ p.posted_date }}</p>
     <hr/>
